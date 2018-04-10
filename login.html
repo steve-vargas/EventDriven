@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Email Login</title>
+    
+<script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyDiWT1a0iFy8GFag_buHHgFIzme_S1yHwk",
+    authDomain: "eventdriven-aadde.firebaseapp.com",
+    databaseURL: "https://eventdriven-aadde.firebaseio.com",
+    projectId: "eventdriven-aadde",
+    storageBucket: "eventdriven-aadde.appspot.com",
+    messagingSenderId: "146473647347"
+  };
+  firebase.initializeApp(config);
+
+</script>
+<script src="https://www.gstatic.com/firebasejs/4.12.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.12.0/firebase-auth.js"></script>
+
+</head>
+<body>
+    <div class="container">
+        <input type="email" id="txtEmail" placeholder="E-mail">
+        <button type="submit" id='btnLogin'>Log In</button>
+    </div>
+    
+</body>
+<script>
+    const txtEmail = document.getElementById('txtEmail');
+    const btnLogin = document.getElementById('btnLogin');
+
+    //add login event
+    btnLogin.addEventListener('click', e => {
+
+        const email = txtEmail.value;
+        const auth = firebase.auth();
+
+    //sign in
+    const promise = auth.signInWithEmail (email);
+    promise.catch (e => console.log(e.message));
+    });
+
+    firebase.auth().onAuthStateChanged(firebaseUser => {
+
+    })
+</script>
+
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Event Driven Activity</title>
+
+<!-- Bootstrap CDN -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<!-- Firebase Auth -->
+    <!-- <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyDiWT1a0iFy8GFag_buHHgFIzme_S1yHwk",
+    authDomain: "eventdriven-aadde.firebaseapp.com",
+    databaseURL: "https://eventdriven-aadde.firebaseio.com",
+    projectId: "eventdriven-aadde",
+    storageBucket: "eventdriven-aadde.appspot.com",
+    messagingSenderId: "146473647347"
+  };
+
+  firebase.initializeApp(config);
+
+</script> -->
+
+
+
+<!-- java.js link-->
+    <script type="text/javascript" src="java.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="jumbotron" >
+        <h2 class="text-center">Event Driven Activity</h2>
+    </div>
+    <div class="col-lg-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h2 class="panel-title"><strong>Search Parameters</strong></h2>
+            </div>
+            <div>
+            <form>
+            <div class="form-group">
+                <label for="sector-input">Sector</label>
+                <input type="text" class="form-control" id="sector-input">
+            </div>
+            <div class="form-group">
+                <label for="52-high-input">52 Week Price Less Than</label>
+                <input type="text" class="form-control" id="52-high-input">
+            </div>
+            <div class="form-group">
+                <label for="52-low-input">52 Week Price Greater Than</label>
+                <input type="text" class="form-control" id="52-low-input">
+            </div>
+            <div class="form-group">
+                <label for="volume-input">Volume</label>
+                <input type="text" class="form-control" id="volume-input">
+            </div>
+            <button type="submit" class="btn btn-primary" id="search-btn">Submit</button>
+            </form>
+        </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h2 class="panel-title"><strong>Results</strong></h2>
+            </div>
+            <div class="panel-body">
+                <table class="table table-hover" id="data-table">
+                    <thead>
+                        <tr>
+                            <th>Security</th>
+                            <th>Price</th>
+                            <th>Vol.</th>
+                            <th>High</th>
+                            <th>Low</th>
+                        </tr>
+                        <tbody>
+                            <!--inserting return values-->
+                        </tbody>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <h2 class="panel-title"><strong>Related News</strong></h2>
+        </div>
+        <div class="panel-body" id="news-body">
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+//Get Press release
+var ticker = "FB";
+var queryURL = 'https://api.intrinio.com/press_releases?identifier=' + ticker;
+
+    $.ajax({
+        url: queryURL,
+        method: 'GET',
+        headers: {"X-Authorization-Public-Key": "d4945da0e2ce380e83c7c3240f29d41f"}
+    }).then(function(data){
+        console.log(data);
+        
+
+    }, function(error){
+        console.error(error);
+    });
+</script>
+<script>
+//Get Stock News
+var ticker = "FB";
+var queryURL = 'https://api.intrinio.com/news?identifier=' + ticker;
+
+    $.ajax({
+        url: queryURL,
+        method: 'GET',
+        headers: {"X-Authorization-Public-Key": "d4945da0e2ce380e83c7c3240f29d41f"}
+    }).then(function(data){
+        console.log(data);
+    }, function(error){
+        console.error(error);
+    });
+</script>
+<script>
+//Screen Search Stocks
+$('#search-btn').on('click', function() {
+
+    event.preventDefault();
+
+
+var weekHigh = $('#52-high-input').val();
+var weekLow = $('#52-low-input').val();
+var sector = $('#sector-input').val().trim();
+var volume = $('#volume-input').val();
+console.log(weekHigh);
+
+var queryURL = 'https://api.intrinio.com/securities/search?conditions=52_week_high~lt~' + weekHigh + ",52_week_low~gt~" + weekLow + ",sector~contains~" + sector + ",volume~gt~" + volume + ",close_price~lte~" + weekHigh; 
+
+    $.ajax({
+        url: queryURL,
+        method: 'GET',
+        headers: {"X-Authorization-Public-Key": "d4945da0e2ce380e83c7c3240f29d41f"}
+    }).then(function(data){
+
+        console.log(data.data[0]["52_week_high"]);
+        console.log(data.data[0]["52_week_low"]);
+        console.log(data.data[0]["sector"]);
+        console.log(data.data[0]["volume"]);
+        console.log(data.data[0]["ticker"]);
+        console.log(data.data[0]["close_price"]);
+        // console.log(data[0])
+    //append the information to the table
+        var tBody = $("tbody");
+        var tRow = $("<tr>");
+
+    //loop through the responses and append to the table
+    for (var i=0; i<data.data.length; i++) {
+        var weekHighTd = data.data[i]["52_week_high"];
+        var weekLowTd = data.data[i]["52_week_low"];
+        var sectorTd = data.data[i]["sector"];
+        var volumeTd = data.data[i]["volume"];
+        var tickerTd = data.data[i]["ticker"];
+        var closePriceTd = data.data[i]["close_price"];
+        
+        var row = document.createElement("tr");
+
+        for (var j=0; j<5;j++ ){
+            var col = document.createElement("td");
+            var col2 = document.createElement("td");
+            var col3 = document.createElement("td");
+            var col4 = document.createElement("td");
+            var col5 = document.createElement("td");
+           
+            // col.append("hello world " + i + " , " + j);
+            col4.append(weekHighTd);
+            col5.append(weekLowTd);
+            col3.append(volumeTd);
+            col.append(tickerTd);
+            col2.append(closePriceTd);
+        }
+        row.append(col);
+        row.append(col2);
+        row.append(col3);
+        row.append(col4);
+        row.append(col5);
+        
+
+
+        tBody.append(row);
+
+
+        // var col1 = document.createElement("tr");
+        // col.append("hello world")
+        // tBody.append(row);
+        // col1.append(weekHighTd);
+        // tBody.append(col1);
+        
+        
+
+
+        // for (j=0; j<data.data.length; j++)
+
+        // row.append(JSON.stringify(tickerTd,closePriceTd,volumeTd,weekHighTd,weekLowTd));
+        // tBody.append(row);
+        //want to create a new row after appending for the next set of data
+
+
+        
+
+    }
+    }, function(error){
+        console.error(error);
+    });
+});
+
+</script>
+
+</body>
+</html>
