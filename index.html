@@ -124,6 +124,48 @@
       </div>
       <div class="row">
         <div class="col-sm-12">
+          <br>
+  
+          <!-- This panel will initially be made up of a panel and wells for each of the articles retrieved -->
+          <div class="panel panel-primary">
+  
+            <!-- Panel Heading for the retrieved articles box -->
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                <strong>
+                  <i class="fa fa-table"></i> Press Release News</strong>
+              </h3>
+            </div>
+  
+            <!-- This main panel will hold each of the resulting articles -->
+            <div class="panel-body" id="pressnews-section">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <br>
+  
+          <!-- This panel will initially be made up of a panel and wells for each of the articles retrieved -->
+          <div class="panel panel-primary">
+  
+            <!-- Panel Heading for the retrieved articles box -->
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                <strong>
+                  <i class="fa fa-table"></i> SEC Filings</strong>
+              </h3>
+            </div>
+  
+            <!-- This main panel will hold each of the resulting articles -->
+            <div class="panel-body" id="sec-section">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
   
           <!-- Line Break followed by closing -->
           <hr>
@@ -160,7 +202,7 @@ $('#search-btn').on('click', function() {
 
 event.preventDefault();
 
-var ticker = $('#new-input').val();
+var ticker = $('#news-input').val();
 var queryURL = 'https://api.intrinio.com/news?identifier=' + ticker;
 
 
